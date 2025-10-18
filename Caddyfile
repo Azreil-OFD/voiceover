@@ -10,9 +10,9 @@ voiceover.evil-chan.ru {
         header_up X-Forwarded-Proto {scheme}
     }
 
-    # Логирование
+    # Логирование в stdout (для Docker)
     log {
-        output file /var/log/caddy/access.log
+        output stdout
         format json
     }
 

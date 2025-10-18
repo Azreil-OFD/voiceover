@@ -1,0 +1,10 @@
+FROM caddy:2-alpine
+
+# Копируем Caddyfile
+COPY Caddyfile /etc/caddy/Caddyfile
+
+# Открываем порты
+EXPOSE 80 443
+
+# Запускаем Caddy
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]

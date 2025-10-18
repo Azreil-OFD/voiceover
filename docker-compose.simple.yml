@@ -29,9 +29,7 @@ services:
 
   # Caddy веб-сервер
   caddy:
-    build:
-      context: .
-      dockerfile: Dockerfile.caddy
+    image: caddy:2-alpine
     container_name: voiceover-caddy
     restart: unless-stopped
     ports:

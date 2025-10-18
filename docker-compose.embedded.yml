@@ -27,16 +27,16 @@ services:
     networks:
       - voiceover-network
 
-  # Caddy веб-сервер
+  # Caddy веб-сервер с встроенной конфигурацией
   caddy:
-    build:
-      context: .
-      dockerfile: Dockerfile.caddy
+    image: caddy:2-alpine
     container_name: voiceover-caddy
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
+    command: |
+      caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
     networks:
       - voiceover-network
     depends_on:
