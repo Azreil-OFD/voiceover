@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # Nuxt приложение
+  nuxt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: voiceover-nuxt
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    networks:
+      - voiceover-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Socket.io сервер
+  socket:
+    build:
+      context: .
+      dockerfile: Dockerfile.socket
+    container_name: voiceover-socket
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - SOCKET_PORT=3001
+    networks:
+      - voiceover-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Caddy веб-сервер
+  caddy:
+    image: caddy:2-alpine
+    container_name: voiceover-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+      - caddy_logs:/var/log/caddy
+    networks:
+      - voiceover-network
+    depends_on:
+      - nuxt
+      - socket
+    healthcheck:
+      test: ["CMD", "caddy", "version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  voiceover-network:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
+  caddy_logs:

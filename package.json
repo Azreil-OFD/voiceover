@@ -5,6 +5,8 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "dev:socket": "node server/socket-server.js",
+    "dev:all": "concurrently \"npm run dev\" \"npm run dev:socket\"",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"

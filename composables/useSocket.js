@@ -4,8 +4,11 @@ let socket = null
 
 export const useSocket = () => {
   if (!socket) {
-    // Подключаемся к тому же порту, что и Nuxt приложение
-    socket = io(window.location.origin, {
+    const config = useRuntimeConfig()
+    const socketUrl = config.public.socketUrl || 'http://localhost:3001'
+    console.log('Connecting to socket:', socketUrl)
+    
+    socket = io(socketUrl, {
       transports: ['websocket', 'polling']
     })
   }
